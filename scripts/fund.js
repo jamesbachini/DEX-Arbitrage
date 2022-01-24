@@ -55,6 +55,7 @@ const main = async () => {
 		const arbBalance = await arb.getBalance(baseAssets[sym].address);
 		console.log(`${sym} Original Arb Balance: `,arbBalance.toString());
 		const tx = await baseAssets[sym].token.transfer(arbContract,baseAssets[sym].initialFunding);
+		//const tx = await baseAssets[sym].token.transfer(arbContract,ownerBalance); // send everything
 		await tx.wait();
 		await new Promise(r => setTimeout(r, 10000));
     const postFundBalance = await arb.getBalance(baseAssets[sym].address);
