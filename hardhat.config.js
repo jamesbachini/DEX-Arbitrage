@@ -10,6 +10,10 @@ module.exports = {
       url: `https://mainnet.aurora.dev`,
       accounts: [process.env.privateKey],
     },
+    fantom: {
+      url: `https://rpc.ftm.tools/`,
+      accounts: [process.env.privateKey],
+    },
   },
   solidity: {
     compilers: [

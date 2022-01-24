@@ -48,6 +48,12 @@ contract Arb is Ownable {
 		return amountOutMins[path.length -1];
 	}
 
+  function estimateDualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external view returns (uint256) {
+		uint256 amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
+		uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
+		return amtBack2;
+	}
+
 	function checkDualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external view returns (bool) {
 		uint256 amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
 		uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
