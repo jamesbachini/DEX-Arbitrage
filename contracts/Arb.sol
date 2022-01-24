@@ -54,35 +54,22 @@ contract Arb is Ownable {
 		return (amtBack2 > _amount);
 	}
 	
-	function dualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
-		IERC20(_token1).transferFrom(msg.sender, address(this), _amount);
-		uint startBalance = IERC20(_token1).balanceOf(address(this));
-		swap(_router1,_token1, _token2,_amount);
-		uint token2Balance = IERC20(_token2).balanceOf(address(this));
-		swap(_router2,_token2, _token1,token2Balance);
-		uint endBalance = IERC20(_token1).balanceOf(address(this));
-		require(endBalance > startBalance, "Trade Reverted, No Profit Made :(");
-		IERC20(_token1).transfer(msg.sender, endBalance);
-	}
+  function dualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
+    uint startBalance = IERC20(_token1).balanceOf(address(this));
+    uint token2InitialBalance = IERC20(_token2).balanceOf(address(this));
+    swap(_router1,_token1, _token2,_amount);
+    uint token2Balance = IERC20(_token2).balanceOf(address(this));
+    uint tradeableAmount = token2Balance - token2InitialBalance;
+    swap(_router2,_token2, _token1,tradeableAmount);
+    uint endBalance = IERC20(_token1).balanceOf(address(this));
+    require(endBalance > startBalance, "Trade Reverted, No Profit Made");
+  }
 
 	function checkTriDexTrade(address _router1, address _router2, address _router3, address _token1, address _token2, address _token3, uint256 _amount) external view returns (bool) {
 		uint amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
 		uint amtBack2 = getAmountOutMin(_router2, _token2, _token3, amtBack1);
 		uint amtBack3 = getAmountOutMin(_router3, _token3, _token1, amtBack2);
 		return (amtBack3 > _amount);
-	}
-	
-	function triDexTrade(address _router1, address _router2, address _router3, address _token1, address _token2,  address _token3, uint256 _amount) external onlyOwner {
-		IERC20(_token1).transferFrom(msg.sender, address(this), _amount);
-		uint startBalance = IERC20(_token1).balanceOf(address(this));
-		swap(_router1,_token1, _token2,_amount);
-		uint token2Balance = IERC20(_token2).balanceOf(address(this));
-		swap(_router2,_token2, _token3,token2Balance);
-		uint token3Balance = IERC20(_token3).balanceOf(address(this));
-		swap(_router3,_token3, _token1,token3Balance);
-		uint endBalance = IERC20(_token1).balanceOf(address(this));
-		require(endBalance > startBalance, "Trade Reverted, No Profit Made :(");
-		IERC20(_token1).transfer(msg.sender, endBalance);
 	}
 
 	function getBalance (address _tokenContractAddress) external view  returns (uint256) {

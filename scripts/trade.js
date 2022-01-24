@@ -2,9 +2,10 @@ const hre = require("hardhat");
 const fs = require("fs");
 const tokenList = require("./../data/tokenList.json");
 const routes = require("./../data/uniqueRoutes.json");
+require("dotenv").config();
 
+const arbContract = process.env.arbContract;
 // Aurora Mainnet
-const arbContract = "0x08dCA03E55b22D7fC76343ffC7d8258149A1DB8e"; // Update this with the deployed contract
 const trisolarisRouter = "0x2CB45Edb4517d5947aFdE3BEAbF95A582506858B";
 const wannaswapRouter = "0xa3a1ef5ae6561572023363862e238afa84c72ef5";
 const auroraswapRouter = "0xA1B1742e9c32C7cAa9726d8204bD5715e3419861";
@@ -43,17 +44,15 @@ let arb,tokenAddresses,owner,inTrade;
 
 const main = async () => {
 	await setup();
-	await new Promise(r => setTimeout(r, 120000));
 	tokenAddresses = [];
 	tokenList.tokens.forEach((token) => {
 		tokenAddresses.push(token.address);
 	});
 
-	const threads = 10;
-	for (let i = 1; i < threads; i++) {
-		lookForDualTrade();
-		await new Promise(r => setTimeout(r, 1000));
-	}
+	[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
+		await new Promise(r => setTimeout(r, i*1000));
+		await lookForDualTrade();
+	});
 	await lookForDualTrade();
 }
 
@@ -108,8 +107,7 @@ const dualTrade = async (router1,router2,baseToken,token2,amount) => {
 		console.log('> Making dualTrade...');
 		const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount);
 		await tx.wait();
-    await new Promise(r => setTimeout(r, 2000));
-		inTrade = false;
+    inTrade = false;
 		// try again?
 		const goodTrade = await arb.checkDualDexTrade(router1, router2, baseToken, token2, amount);
 		if (goodTrade) {
@@ -129,18 +127,16 @@ const setup = async () => {
 	console.log(`Owner: ${owner.address}`);
 	const IArb = await ethers.getContractFactory('Arb');
 	arb = await IArb.attach(arbContract);
-	Object.keys(baseAssets).forEach(async (sym,i) => {
-		await new Promise(r => setTimeout(r, i*15000));
+  for (let i = 0; i < Object.keys(baseAssets).length; i++) {
+    const sym = Object.keys(baseAssets)[i];
 		const interface = await ethers.getContractFactory('WETH9');
 		baseAssets[sym].token = await interface.attach(baseAssets[sym].address);
-		await baseAssets[sym].token.connect(owner).approve(arbContract,ethers.utils.parseEther('10000000000'));
-		const bal = await baseAssets[sym].token.balanceOf(owner.address);
+		const bal = await baseAssets[sym].token.balanceOf(arbContract);
 		console.log(sym, bal.toString());
 		baseAssets[sym].size = bal;
 		baseAssets[sym].startSize = bal;
 		baseAssets[sym].sizeArray = [bal];
-
-	});
+	}
 	setTimeout(() => {
 		setInterval(() => {
 			logResults();
@@ -158,7 +154,7 @@ const logResults = () => {
 			const diff = baseAssets[sym].size.sub(baseAssets[sym].startSize);
 			const percentage = diff.mul(10000).div(baseAssets[sym].startSize);
 			baseAssets[sym].sizeArray.push(baseAssets[sym].size);
-			if (baseAssets[sym].sizeArray.length > 60) baseAssets[sym].sizeArray.shift();
+			if (baseAssets[sym].sizeArray.length > 4) baseAssets[sym].sizeArray.shift();
 			const hourDiff = baseAssets[sym].size.sub(baseAssets[sym].sizeArray[0]);
 			const hourPercentage = hourDiff.mul(10000).div(baseAssets[sym].sizeArray[0]);
 			console.log(`#  ${sym}: ${percentage.toString()}bps  (${hourPercentage.toString()}bps/hr)`);
