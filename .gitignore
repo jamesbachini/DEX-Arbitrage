@@ -1,3 +1,5 @@
+.env
+
 # Logs
 logs
 *.log
@@ -74,3 +76,14 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+#Hardhat files
+cache
+artifacts
+data/balances.txt
