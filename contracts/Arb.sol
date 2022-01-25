@@ -53,12 +53,6 @@ contract Arb is Ownable {
 		uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
 		return amtBack2;
 	}
-
-	function checkDualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external view returns (bool) {
-		uint256 amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
-		uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
-		return (amtBack2 > _amount);
-	}
 	
   function dualDexTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
     uint startBalance = IERC20(_token1).balanceOf(address(this));
@@ -71,11 +65,11 @@ contract Arb is Ownable {
     require(endBalance > startBalance, "Trade Reverted, No Profit Made");
   }
 
-	function checkTriDexTrade(address _router1, address _router2, address _router3, address _token1, address _token2, address _token3, uint256 _amount) external view returns (bool) {
+	function estimateTriDexTrade(address _router1, address _router2, address _router3, address _token1, address _token2, address _token3, uint256 _amount) external view returns (uint256) {
 		uint amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
 		uint amtBack2 = getAmountOutMin(_router2, _token2, _token3, amtBack1);
 		uint amtBack3 = getAmountOutMin(_router3, _token3, _token1, amtBack2);
-		return (amtBack3 > _amount);
+		return amtBack3;
 	}
 
 	function getBalance (address _tokenContractAddress) external view  returns (uint256) {
