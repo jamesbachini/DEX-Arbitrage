@@ -1,5 +1,6 @@
 {
-  "arbContract": "0xE52E53Da2c15E1893EF448455E14E3Ab3C533540",
+  "arbContract": "0x173325C093a3dEc8834C44e2d9E2bd4c37E7DE84",
+  "minBasisPointsPerTrade": 5,
   "routers": [
     { "dex": "trisolaris", "address": "0x2CB45Edb4517d5947aFdE3BEAbF95A582506858B" },
     { "dex": "wannaswap", "address": "0xa3a1ef5ae6561572023363862e238afa84c72ef5" },

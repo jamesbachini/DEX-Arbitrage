@@ -25,8 +25,8 @@ const main = async () => {
 		await new Promise(r => setTimeout(r, 10000));
     const postFundBalance = await arb.getBalance(asset.address);
     console.log(`${asset.sym} New Arb Balance: `,postFundBalance.toString());
-		console.log('Note it might take a while for the funds to show up, try balances.js in a few mins');
   }
+	console.log('Note it might take a while for the funds to show up, try balances.js in a few mins');
 }
 
 process.on('uncaughtException', function(err) {
