@@ -77,7 +77,7 @@ const dualTrade = async (router1,router2,baseToken,token2,amount) => {
   try {
     inTrade = true;
     console.log('> Making dualTrade...');
-    const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount);
+    const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
     await tx.wait();
     inTrade = false;
     await lookForDualTrade();
@@ -121,18 +121,6 @@ const logResults = async () => {
     const basisPoints = diff.mul(10000).div(balances[asset.address].startBalance);
     console.log(`#  ${asset.sym}: ${basisPoints.toString()}bps`);
   }
-}
-const checkBalance = async (sym) => {
-  const balance = await arb.getBalance(config.baseAssets[sym].address);
-  console.log('Balance',balance.toString());
-}
-
-const recover = async (sym) => {
-  let balance = await arb.getBalance(config.baseAssets[sym].address);
-  console.log('Balance',balance.toString());
-  await arb.connect(owner).recoverTokens(config.baseAssets[sym].address);
-  balance = await arb.getBalance(config.baseAssets[sym].address);
-  console.log('Balance',balance.toString());
 }
 
 process.on('uncaughtException', function(err) {
