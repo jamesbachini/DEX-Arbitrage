@@ -4,6 +4,8 @@ This code base was created as part of an intermediate solidity tutorial availabl
 
 https://jamesbachini.com/dex-arbitrage/
 
+Please note that Aurora on Near Protocol have now introduced gas/transaction fees. More info on their twitter account https://twitter.com/AuroraIsNear
+If running it on that chain you need a little ETH to pay gas fees in the owner address wallet that is firing off transactions.
 
 ## Disclaimer
 Note the code is provided for educational purposes, is unaudited and not fit for financial transactions. Use it to experiment with and build your own strategies. A technical support call center is not available if you get funds stuck so make sure to test the recover.js script before doing anything else. Use on a testnet with play money or with funds you are willing to lose.
