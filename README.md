@@ -33,7 +33,7 @@ npx hardhat run --network aurora .\scripts\deploy.js
 Finally to recover any funds use the script.
 
 ```shell
-npx hardhat run --network aurora .\scripts\deploy.js
+npx hardhat run --network aurora .\scripts\recover.js
 ```
 
 More info and solidity tutorials on my blog at https://jamesbachini.com
