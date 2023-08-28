@@ -12,6 +12,10 @@ const main = async () => {
   console.log(`Owner: ${owner.address}`);
   const IArb = await ethers.getContractFactory('Arb');
   arb = await IArb.attach(config.arbContract);
+
+  console.log("Eth recover...");
+  await arb.connect(owner).recoverEth();
+
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
     let balance = await arb.getBalance(asset.address);
